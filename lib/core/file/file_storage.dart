@@ -11,7 +11,6 @@ import 'package:dart_git/dart_git.dart';
 import 'package:dart_git/exceptions.dart';
 import 'package:dart_git/file_mtime_builder.dart';
 import 'package:flutter/foundation.dart';
-import 'package:gitjournal/error_reporting.dart';
 import 'package:gitjournal/logger/logger.dart';
 import 'package:path/path.dart' as p;
 import 'package:tuple/tuple.dart';
@@ -95,7 +94,7 @@ class FileStorage with ChangeNotifier {
       }
     });
 
-    var resp = await compute(
+    var result = await compute(
       _fillFileStorage,
       _FillFileStorageParams(
         rp.sendPort,
@@ -106,10 +105,18 @@ class FileStorage with ChangeNotifier {
     );
     rp.close();
 
-    // FIXME: Handle this case of having an error!
-    assert(resp != null);
-    if (resp == null) return;
+    if (!result.isSuccess) {
+      Log.e(
+        "FileStorage.fill failed in isolate",
+        ex: result.errorMessage,
+        stacktrace: result.stackTrace != null
+            ? StackTrace.fromString(result.stackTrace!)
+            : null,
+      );
+      return;
+    }
 
+    var resp = result.output!;
     blobCTimeBuilder.update(resp.item1);
     fileMTimeBuilder.update(resp.item2);
     head = resp.item3;
@@ -164,7 +171,25 @@ typedef _FillFileStorageParams
 typedef _FillFileStorageOutput
     = Tuple3<BlobCTimeBuilder, FileMTimeBuilder, GitHash>;
 
-_FillFileStorageOutput? _fillFileStorage(_FillFileStorageParams params) {
+/// Wraps the result from the compute isolate, including error details.
+/// This is necessary because logging inside an isolate doesn't work
+/// (static Log.logFile is null in the isolate).
+class _FillFileStorageResult {
+  final _FillFileStorageOutput? output;
+  final String? errorMessage;
+  final String? stackTrace;
+
+  _FillFileStorageResult.success(this.output)
+      : errorMessage = null,
+        stackTrace = null;
+
+  _FillFileStorageResult.error(this.errorMessage, this.stackTrace)
+      : output = null;
+
+  bool get isSuccess => output != null;
+}
+
+_FillFileStorageResult _fillFileStorage(_FillFileStorageParams params) {
   var sendPort = params.item1;
   var repoPath = params.item2;
   var blobCTimeBuilder = params.item3;
@@ -188,17 +213,20 @@ _FillFileStorageOutput? _fillFileStorage(_FillFileStorageParams params) {
     Log.d("Got HEAD: $head");
 
     gitRepo.visitTree(fromCommitHash: head, visitor: visitor);
-    return _FillFileStorageOutput(blobCTimeBuilder, fileMTimeBuilder, head);
+    return _FillFileStorageResult.success(
+      _FillFileStorageOutput(blobCTimeBuilder, fileMTimeBuilder, head),
+    );
   } catch (ex, st) {
     if (ex is GitRefNotFound) {
-      return _FillFileStorageOutput(
-        blobCTimeBuilder,
-        fileMTimeBuilder,
-        GitHash.zero(),
+      return _FillFileStorageResult.success(
+        _FillFileStorageOutput(
+          blobCTimeBuilder,
+          fileMTimeBuilder,
+          GitHash.zero(),
+        ),
       );
     }
-    logException(ex, st);
-
-    return null;
+    // Return error details to the main isolate for proper logging
+    return _FillFileStorageResult.error(ex.toString(), st.toString());
   }
 }
