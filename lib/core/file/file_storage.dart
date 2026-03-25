@@ -106,7 +106,9 @@ class FileStorage with ChangeNotifier {
       Log.e(
         "FileStorage.fill failed in isolate",
         ex: result.errorMessage,
-        stacktrace: result.stackTrace,
+        stacktrace: result.stackTrace != null
+            ? StackTrace.fromString(result.stackTrace!)
+            : null,
       );
       return;
     }
