@@ -24,7 +24,7 @@ dependencies:
   dart_git:
     git:
       url: https://github.com/ketsapiwiq/dart-git.git
-      ref: fix/pack-file-decode-large-repos
+      ref: remove-stdlibc
     # path: ../gitjournal/dart-git
   device_info_plus: ^9.1.1
   dio: ^4.0.6
