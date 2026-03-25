@@ -49,6 +49,88 @@ GitJournal is a note taking app focused on privacy and data portability. It stor
 
 Please feel free to [open an issue](https://github.com/GitJournal/GitJournal/issues/new) for any bug or feature request. Additionally, you can vote on existing [Issues](https://github.com/GitJournal/GitJournal/issues?q=is%3Aissue+is%3Aopen+sort%3Areactions-%2B1-desc) by reacting with a '👍'.
 
+## Building Locally
+
+### Prerequisites
+
+- [Flutter SDK](https://flutter.dev/) (3.41.5-stable or compatible)
+- For Android: Java 17+ and Android SDK
+
+#### Installing Flutter via asdf (recommended)
+
+This project uses [asdf](https://asdf-vm.com/) to manage Flutter:
+
+```bash
+# Add Flutter plugin to asdf
+asdf plugin add flutter
+
+# Install the version specified in .tool-versions
+asdf install
+
+# Enable asdf in your shell (add to ~/.zshrc or ~/.bashrc)
+. "$HOME/.asdf/asdf.sh"
+
+# Reload your shell or run:
+source ~/.zshrc  # or source ~/.bashrc
+
+# Verify
+flutter --version
+```
+
+If asdf is not configured in your shell, you can use Flutter directly:
+```bash
+~/.asdf/installs/flutter/3.41.5-stable/bin/flutter --version
+```
+
+### Setup
+
+1. Install dependencies:
+   ```bash
+   flutter pub get
+   ```
+
+2. Ensure your environment is ready:
+   ```bash
+   flutter doctor
+   ```
+
+### Build and Run
+
+**Linux (Desktop):**
+```bash
+# Enable Linux desktop support (first time only)
+flutter config --enable-linux-desktop
+
+# Build
+flutter build linux
+
+# Run the app
+flutter run -d linux
+
+# Or run the built binary directly
+./build/linux/x64/debug/bundle/gitjournal
+```
+
+**Android:**
+```bash
+# Build APK
+flutter build apk
+
+# Run on connected device/emulator
+flutter run -d android
+```
+
+> **Note:** Web builds are not supported because GitJournal uses native Git bindings (`dart:ffi`).
+
+### Development
+
+For hot-reload during development:
+```bash
+flutter run -d linux  # or -d android
+```
+
+Press `r` to hot reload, `R` to hot restart, `q` to quit.
+
 # License
 
 All code contributed by [Vishesh Handa](https://github.com/vhanda) is licensed under the [AGPL](https://www.gnu.org/licenses/agpl-3.0.en.html). All code contributed by anyone else is licensed under the Apache License 2.0. This is done so that GitJournal can avoid needing a CLA, and it can be distributed it on the Apple App Store which doesn't allow AGPL.
