@@ -22,7 +22,9 @@ dependencies:
   cryptography: ^2.0.5
   dart_date: ^1.5.3
   dart_git:
-    git: https://github.com/GitJournal/dart-git.git
+    git:
+      url: https://github.com/ketsapiwiq/dart-git.git
+      ref: fix/pack-file-decode-large-repos
     # path: ../gitjournal/dart-git
   device_info_plus: ^9.1.1
   dio: ^4.0.6
