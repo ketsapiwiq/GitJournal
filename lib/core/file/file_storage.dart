@@ -42,8 +42,11 @@ class FileStorage with ChangeNotifier {
     assert(!filePath.startsWith(p.separator));
     var fullFilePath = p.join(repoPath, filePath);
 
-    assert(fileMTimeBuilder.map.isNotEmpty, "Trying to load $filePath");
-    assert(blobCTimeBuilder.map.isNotEmpty, "Trying to load $filePath");
+    // These can be empty if fill() failed (e.g., pack file decoding issues in large repos)
+    // Instead of asserting, we throw a proper exception that can be handled upstream
+    if (fileMTimeBuilder.map.isEmpty || blobCTimeBuilder.map.isEmpty) {
+      throw FileStorageCacheIncomplete(filePath);
+    }
 
     var ioFile = io.File(fullFilePath);
     var stat = ioFile.statSync();
