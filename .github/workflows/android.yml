@@ -43,11 +43,10 @@ jobs:
       # - name: Test
       #   run: flutter test
       - name: Build APK
-        run: ./scripts/build_android.sh ${{ github.run_number }}
+        run: flutter build apk --flavor prod
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: APK
           path: build/app/outputs/flutter-apk/app-prod-release.apk
           if-no-files-found: error
-
