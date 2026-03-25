@@ -18,6 +18,14 @@ Future<int> main(List<String> args) async {
     stderr.writeln(ex);
   }
 
+  // Ensure required keys are always present
+  const requiredKeys = ['sentry', 'analyticsUrl'];
+  for (final key in requiredKeys) {
+    if (!config.containsKey(key)) {
+      config[key] = null;
+    }
+  }
+
   if (args.isNotEmpty) {
     config = config.map((key, value) => MapEntry(key, null));
   }
@@ -25,14 +33,23 @@ Future<int> main(List<String> args) async {
   stderr.writeln(config);
   stderr.writeln('');
 
-  var contents = 'class Env {\n';
-  config.forEach((key, value) {
+  const header =
+      '''// SPDX-FileCopyrightText: 2019-2021 Vishesh Handa <me@vhanda.in>
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
+''';
+
+  var contents = header + 'class Env {\n';
+  final sortedKeys = config.keys.toList()..sort();
+  for (final key in sortedKeys) {
+    final value = config[key];
     if (value == null) {
       contents += '  static final String $key = "";\n';
     } else {
       contents += '  static final String $key = "$value";\n';
     }
-  });
+  }
   contents += '}\n';
 
   stderr.writeln(contents);
