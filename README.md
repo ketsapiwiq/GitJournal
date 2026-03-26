@@ -3,31 +3,22 @@
   <br/>Mobile first Markdown Notes integrated with Git</b>
 </p>
 
-> **Note:** This is a fork of [GitJournal](https://github.com/GitJournal/GitJournal) with fixes and CI improvements. Considered "slopware (glm5)" - use at your own risk.
+> **Note:** This is a fork of [GitJournal](https://github.com/GitJournal/GitJournal) with vibecoded fixes for my personal use. Consider it "slopware" if you will - use at your own risk or stick to well-crafted original project.
 
 ## Changes Since Fork
 
 This fork includes the following fixes over the upstream repository:
 
 ### Bug Fixes
-- **Fix large repo cloning**: Fixed pack file decoding to handle large repositories
-- **Fix stacktrace type conversion**: Convert String stackTrace to StackTrace type in FileStorage
-- **Switch dart_git dependency**: Use fork with fixes at [ketsapiwiq/dart-git](https://github.com/ketsapiwiq/dart-git)
+- **Fix large repo cloning**: Fixed pack file decoding to handle large repositories, uses fork with fixes at [ketsapiwiq/dart-git](https://github.com/ketsapiwiq/dart-git)
+- **Revert stdlibc dependency**
+- Quick ugly fixes to make the build work on CI (env vars, signing, etc.)
+- Quick stacktrace edit to get more debug logs in FileStorage
 
-### CI/Build
-- Quick ugly fixes to make the build work (NDK, stdlibc, env vars, signing, etc.)
-- Android workflow creates GitHub releases with APK on every push to master
 
 <p align="center">
-  <a href="https://play.google.com/store/apps/details?id=io.gitjournal.gitjournal&utm_source=github&utm_medium=link"><img alt="Get it on Google Play" src="https://gitjournal.io/images/android-store-badge.png" height="75px"/></a>
-  <a href="https://apps.apple.com/app/gitjournal/id1466519634&utm_source=github&utm_medium=link"><img alt="Download on the App Store" src="https://gitjournal.io/images/ios-store-badge.svg" height="75px"/></a>
-</p>
-
-<p align="center">
-  <a href="https://circleci.com/gh/GitJournal/GitJournal"><img alt="Build Status" src="https://circleci.com/gh/GitJournal/GitJournal.svg?style=svg"/></a>
   <a href="https://www.gnu.org/licenses/agpl-3.0"><img alt="License: AGPL v3" src="https://img.shields.io/badge/License-AGPL%20v3-blue.svg"></a>
   </br>
-  <a href="https://api.reuse.software/info/github.com/GitJournal/GitJournal"><img alt="REUSE status" src="https://api.reuse.software/badge/github.com/GitJournal/GitJournal"></a>
   <a href="https://github.com/sponsors/vHanda"><img alt="Donate via GitHub" src="https://img.shields.io/badge/Sponsor-Github-%235a353"></a>
   </br>
 </p>
