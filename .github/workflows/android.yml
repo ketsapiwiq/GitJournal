@@ -50,3 +50,16 @@ jobs:
           name: APK
           path: build/app/outputs/flutter-apk/app-prod-release.apk
           if-no-files-found: error
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: build-${{ github.sha }}
+          name: Build ${{ github.sha }}
+          body: |
+            Automated build from commit ${{ github.sha }}
+            Branch: ${{ github.ref_name }}
+          files: build/app/outputs/flutter-apk/app-prod-release.apk
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
